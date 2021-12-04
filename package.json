@@ -1,0 +1,29 @@
+{
+  "name": "fullstackopen_postgres",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlehtonen/FullStackOpen_Postgres.git"
+  },
+  "author": "Jaakko Lehtonen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jlehtonen/FullStackOpen_Postgres/issues"
+  },
+  "homepage": "https://github.com/jlehtonen/FullStackOpen_Postgres#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "sequelize": "^6.12.0-alpha.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
