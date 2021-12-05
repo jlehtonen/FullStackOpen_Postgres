@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG5kb2VAZG9tYWluLmNvbSIsImlkIjoxLCJpYXQiOjE2Mzg3MTk4OTl9.WWkCGRDOI1EoEJPJHZsSpRI4vZMb-yQy9hARDdAWhb4
 
 {
   "author": "Jane Doe",
-  "url": "https://anotherexampleblog.com/post-123",
-  "title": "Post 123",
-  "likes": 234
+  "url": "https://anotherexampleblog.com/post-1567",
+  "title": "Post 1567",
+  "likes": 23
 }
