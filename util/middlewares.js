@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { User, Session } = require("../models");
 const { SECRET } = require("./config");
 
 const errorHandler = (error, req, res, next) => {
@@ -11,20 +12,39 @@ const errorHandler = (error, req, res, next) => {
   return res.status(400).send({ error });
 };
 
-const tokenExtractor = (req, res, next) => {
+const extractUser = async (req, res, next) => {
   const authorization = req.get("authorization");
-  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-    try {
-      console.log(authorization.substring(7));
-      req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
-    } catch (error) {
-      console.log(error);
-      return res.status(401).json({ error: "token invalid" });
-    }
-  } else {
+  if (!authorization || !authorization.toLowerCase().startsWith("bearer ")) {
     return res.status(401).json({ error: "token missing" });
+  }
+  let token = null;
+  let decodedToken = null;
+  try {
+    token = authorization.substring(7);
+    console.log(token);
+    decodedToken = jwt.verify(token, SECRET);
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ error: "token invalid" });
+  }
+  const session = await Session.findOne({ where: { userId: decodedToken.id } });
+  if (!session || session.token !== token) {
+    return res.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findByPk(decodedToken.id);
+  if (!user) {
+    return res.status(401).json({ error: "token invalid" });
+  }
+  req.user = user;
+  next();
+};
+
+const requireEnabledUser = (req, res, next) => {
+  if (req.user.isDisabled) {
+    return res.status(403).json({ error: "user is disabled" });
   }
   next();
 };
 
-module.exports = { errorHandler, tokenExtractor };
+module.exports = { errorHandler, extractUser, requireEnabledUser };

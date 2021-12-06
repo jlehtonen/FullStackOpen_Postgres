@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphbmVkb2VAZG9tYWluLmNvbSIsImlkIjoxLCJpYXQiOjE2Mzg3NDE1ODd9.3HOs2Z2ZyJzzxXQSzNzbW5bAuLUhl5pGeoCyrKMcGkk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphbmVkb2VAZG9tYWluLmNvbSIsImlkIjoyLCJpYXQiOjE2Mzg3OTgxMzl9.Kyz1VWb8QPlx17_E81LgBr_3RKiSuc5T9DAZSLYsE2o
 
 {
   "author": "Jane Doe",

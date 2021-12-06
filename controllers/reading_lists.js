@@ -3,7 +3,7 @@ const router = require("express").Router();
 const User = require("../models/user");
 const Blog = require("../models/blog");
 const ReadingList = require("../models/reading_list");
-const { tokenExtractor } = require("../util/middlewares");
+const { extractUser, requireEnabledUser } = require("../util/middlewares");
 
 router.post("/", async (req, res) => {
   const user = await User.findByPk(req.body.user_id);
@@ -16,13 +16,13 @@ router.post("/", async (req, res) => {
   return res.send(readingList);
 });
 
-router.put("/:id", tokenExtractor, async (req, res) => {
+router.put("/:id", extractUser, requireEnabledUser, async (req, res) => {
   const readingListEntry = await ReadingList.findByPk(req.params.id);
   if (!readingListEntry) {
     return res.status(404).end();
   }
 
-  if (req.decodedToken.id !== readingListEntry.userId) {
+  if (req.user.id !== readingListEntry.userId) {
     return res.status(403).send({
       error: "entries on other users' reading lists cannot be edited",
     });

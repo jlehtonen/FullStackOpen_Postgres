@@ -1,9 +1,9 @@
 const router = require("express").Router();
 
-const { Blog, User } = require("../models");
+const { Blog, User, ReadingList } = require("../models");
 
 const { Op } = require("sequelize/dist");
-const { tokenExtractor } = require("../util/middlewares");
+const { extractUser, requireEnabledUser } = require("../util/middlewares");
 
 router.get("/", async (req, res) => {
   let where = {};
@@ -25,9 +25,8 @@ router.get("/", async (req, res) => {
   res.json(blogs);
 });
 
-router.post("/", tokenExtractor, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id);
-  const blog = await Blog.create({ ...req.body, userId: user.id });
+router.post("/", extractUser, requireEnabledUser, async (req, res) => {
+  const blog = await Blog.create({ ...req.body, userId: req.user.id });
   res.json(blog);
 });
 
@@ -36,18 +35,25 @@ const blogFinder = async (req, res, next) => {
   next();
 };
 
-router.delete("/:id", blogFinder, tokenExtractor, async (req, res) => {
-  if (req.blog) {
-    if (req.decodedToken.id !== req.blog.userId) {
-      return res
-        .status(403)
-        .send({ error: "cannot delete other users' blogs" });
+router.delete(
+  "/:id",
+  blogFinder,
+  extractUser,
+  requireEnabledUser,
+  async (req, res) => {
+    if (req.blog) {
+      if (req.user.id !== req.blog.userId) {
+        return res
+          .status(403)
+          .send({ error: "cannot delete other users' blogs" });
+      }
+      await ReadingList.destroy({ where: { blogId: req.blog.id } });
+      await req.blog.destroy();
     }
-    await req.blog.destroy();
-  }
 
-  res.status(204).end();
-});
+    res.status(204).end();
+  }
+);
 
 router.put("/:id", blogFinder, async (req, res) => {
   if (req.blog) {
